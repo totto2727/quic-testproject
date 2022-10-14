@@ -7,8 +7,10 @@ let client = new HttpClient()
 
 let req = task {
  return! client.GetStringAsync("https://tottoquic.ml")
-} 
+}
 
-let res = req |> Async.AwaitTask |> Async.RunSynchronously
+let res1 = req |> Async.AwaitTask |> Async.RunSynchronously
+printfn($"{res1}")
 
-printfn($"{res}")   
+let res2 = req |> Async.AwaitTask|>Async.RunSynchronously
+printfn($"{res2}")

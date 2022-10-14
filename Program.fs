@@ -4,13 +4,20 @@ open System.Net
 open System.Net.Http
 
 let client = new HttpClient()
+client.DefaultRequestVersion <- HttpVersion.Version30
+client.DefaultVersionPolicy <- HttpVersionPolicy.RequestVersionOrLower
 
 let req = task {
- return! client.GetStringAsync("https://tottoquic.ml")
+ return! client.GetAsync("https://tottoquic.ml")
 }
 
-let res1 = req |> Async.AwaitTask |> Async.RunSynchronously
-printfn($"{res1}")
-
-let res2 = req |> Async.AwaitTask|>Async.RunSynchronously
-printfn($"{res2}")
+[1 .. 10]
+|> Seq.map (fun n -> task {
+    let! res = req
+    return n, res
+})
+|> Seq.map Async.AwaitTask
+|> Async.Parallel
+|> Async.RunSynchronously
+|> Array.map (fun (n, res) -> printfn($"{n} H:{res.Version} S:{res.StatusCode}"))
+|> ignore

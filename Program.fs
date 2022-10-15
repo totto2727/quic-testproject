@@ -8,6 +8,8 @@ for i = 1 to 10 do
   client.DefaultRequestVersion <- HttpVersion.Version20
   // client.DefaultRequestVersion <- HttpVersion.Version30
   client.DefaultVersionPolicy <- HttpVersionPolicy.RequestVersionExact
+  
+  client.DefaultRequestHeaders.CacheControl.NoCache <- true
 
   let req = task {
    return! client.GetAsync("https://tottoquic.ml")
@@ -23,3 +25,4 @@ for i = 1 to 10 do
   |> Async.RunSynchronously
   |> Array.map (fun (n, res) -> printfn($"{n} V:{res.Version} S:{res.StatusCode}"))
   |> ignore
+
